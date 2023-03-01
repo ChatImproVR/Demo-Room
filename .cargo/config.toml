@@ -1,5 +1,9 @@
+[package]
+name="demo_room"
+
 [build]
 target = "wasm32-unknown-unknown"   
 
 [alias]
-test_pc = "test --target=x86_64-unknown-linux-gnu"
+# test_pc = "test --target=x86_64-unknown-linux-gnu" # For linux
+test_pc = "test --target=x86_64-pc-windows-msvc"
