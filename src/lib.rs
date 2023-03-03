@@ -11,14 +11,16 @@ mod obj;
 // All state associated with client-side behaviour
 struct ClientState;
 
-pub const SHIP_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Ship"));
+pub const DODECA_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Dodeca"));
 
 impl UserState for ClientState {
     // Implement a constructor
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
         //let mesh = obj_lines_to_mesh(include_str!("assets/ship.obj"));
         let mesh = obj_lines_to_mesh(include_str!("assets/dodecahedron.obj"));
-        io.send(&UploadMesh { mesh, id: SHIP_RDR });
+        
+        io.send(&UploadMesh { mesh, id: DODECA_RDR });
+        
 
         // NOTE: We are using the println defined by cimvr_engine_interface here, NOT the standard library!
         cimvr_engine_interface::println!("This prints");
@@ -36,7 +38,8 @@ impl UserState for ServerState {
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
         let ent = io.create_entity();
         io.add_component(ent, &Transform::identity());
-        io.add_component(ent, &Render::new(SHIP_RDR).primitive(Primitive::Triangles));
+        io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
+        io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
         io.add_component(ent, &Synchronized);
 
         println!("Hello, server!");
