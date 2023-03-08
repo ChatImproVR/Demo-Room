@@ -1,5 +1,5 @@
 use cimvr_common::{
-    render::{Primitive, Render, UploadMesh, MeshHandle},
+    render::{Mesh, Primitive, Render, UploadMesh, MeshHandle},
     Transform,
 };
 use cimvr_engine_interface::{make_app_state, pkg_namespace, prelude::*, println};
@@ -13,13 +13,19 @@ struct ClientState;
 
 pub const DODECA_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Dodeca"));
 
+fn dodo() -> Mesh {
+    let dodecahedron = obj_lines_to_mesh(include_str!("assets/dodecahedron.obj"));
+    
+    dodecahedron
+}
+
 impl UserState for ClientState {
     // Implement a constructor
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
-        //let mesh = obj_lines_to_mesh(include_str!("assets/ship.obj"));
-        let mesh = obj_lines_to_mesh(include_str!("assets/dodecahedron.obj"));
         
-        io.send(&UploadMesh { mesh, id: DODECA_RDR });
+        io.send(&UploadMesh { 
+            mesh: dodo(),
+             id: DODECA_RDR });
         
 
         // NOTE: We are using the println defined by cimvr_engine_interface here, NOT the standard library!
@@ -39,7 +45,7 @@ impl UserState for ServerState {
         let ent = io.create_entity();
         io.add_component(ent, &Transform::identity());
         io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
-        io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
+        //io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
         io.add_component(ent, &Synchronized);
 
         println!("Hello, server!");
