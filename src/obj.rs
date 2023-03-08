@@ -52,6 +52,9 @@ pub fn obj_lines_to_mesh(obj: &str) -> Mesh {
                 // Treat the line as a list of indices to be divided into triangles
                 // Drawing faces as a triangle fan
 
+                //faces don't just include indices-- they can also include vertex normals (vn) and texture coordinates (vt)
+                // We have to anticipate that
+
                 // A face must have at least 3 vertices and at most 30.
                 let mut faces = [0; 3];
                 let max_indices = 30;
@@ -63,11 +66,23 @@ pub fn obj_lines_to_mesh(obj: &str) -> Mesh {
                 // How do we parse through the line AND add it to a mutable array? Use .push()?
                 // Potentially infitie loops are terrifying. Re evaluate this later
                 loop { 
-                    let Some(text) = rest.next() else { break };            // Refutable pattern match - if nothing left, break
+                    let Some(text) = rest.next() else { break };      // Refutable pattern match - if nothing left, break
                                                                             // Index from string to int, check if index exists
                                                                             // Add the index to the vector
-                    let idx: u32 = text.parse().expect("Invalid index");
-                    parsed_line.push(idx - 1);                              // OBJ files are one-indexed                                                
+                    let index_info: Vec<&str> = text.split("/").collect();  // Split and collect-- from v/vt/vn to <v, vt, vn>
+
+
+                    let idx: u32 = index_info[0].parse().expect("Invalid index");
+                    parsed_line.push(idx - 1);                              // OBJ files are one-indexed 
+
+                    // Index value might also have vt, vn
+                    // Still need to find a way to apply these
+                    if index_info.len() >= 2 {
+                        let vt = index_info[1].parse::<u32>().expect("Invalid vt");
+                        if index_info.len() ==3 {
+                            let vn = index_info[2].parse::<u32>().expect("Invalid vn");
+                        }
+                    }
                     
                     // We don't want a face with more than ten triangles. Break the loop.
                     // Probably need to produce an error here
