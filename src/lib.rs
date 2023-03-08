@@ -45,7 +45,6 @@ impl UserState for ServerState {
         let ent = io.create_entity();
         io.add_component(ent, &Transform::identity());
         io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
-        //io.add_component(ent, &Render::new(DODECA_RDR).primitive(Primitive::Triangles));
         io.add_component(ent, &Synchronized);
 
         println!("Hello, server!");
