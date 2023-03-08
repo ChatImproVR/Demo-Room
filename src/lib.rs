@@ -6,7 +6,7 @@ use cimvr_engine_interface::{make_app_state, pkg_namespace, prelude::*, println}
 
 use crate::obj::obj_lines_to_mesh;
 
-mod obj;
+pub mod obj;
 
 // All state associated with client-side behaviour
 struct ClientState;
