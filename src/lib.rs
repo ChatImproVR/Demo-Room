@@ -14,8 +14,8 @@ struct ClientState;
 pub const DODECA_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Dodeca"));
 pub const AVATAR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Avatar"));
 pub const AVATAR_SHADER: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
-
 pub const COUCH_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch"));
+pub const BLOCK_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Blocks"));
 
 // Load meshes
 fn couch_mr() -> Mesh {
@@ -28,7 +28,13 @@ fn avatar() -> Mesh {
     avatar
 }
 
-// Create shaders
+fn blocks() -> Mesh {
+    let blocks = obj_lines_to_mesh(include_str!("assets/block.obj"));
+    blocks
+}
+
+
+// Create shaders -- not in use yet
 fn avatar_shader() -> ShaderSource {
     let fragment_src = "
     #version 330
@@ -58,7 +64,10 @@ impl UserState for ClientState {
         io.send(&UploadMesh { 
             mesh: couch_mr(),
             id: COUCH_RDR });
-            
+        
+        io.send(&UploadMesh { 
+            mesh: blocks(),
+            id: BLOCK_RDR });
 
         // NOTE: We are using the println defined by cimvr_engine_interface here, NOT the standard library!
         cimvr_engine_interface::println!("This prints");
@@ -90,6 +99,13 @@ impl UserState for ServerState {
             shader: None,
         };
 
+        let block_render = Render {
+            id: BLOCK_RDR,
+            primitive: Primitive::Triangles,
+            limit: None,
+            shader: None,
+        };
+
         // Create entities
         let avatar = io.create_entity();
         io.add_component(avatar, &Transform::identity());
@@ -100,6 +116,11 @@ impl UserState for ServerState {
         io.add_component(couch, &Transform::identity());
         io.add_component(couch, &couch_render);
         io.add_component(couch, &Synchronized);
+
+        let blocks = io.create_entity();
+        io.add_component(blocks, &Transform::identity());
+        io.add_component(blocks, &block_render);
+        io.add_component(blocks, &Synchronized);
 
         println!("Hello, server!");
         Self
