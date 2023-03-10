@@ -15,19 +15,20 @@ pub const DODECA_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Dodeca"));
 pub const AVATAR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Avatar"));
 pub const AVATAR_SHADER: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
 
+pub const COUCH_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch"));
 
-fn dodo() -> Mesh {
-    let dodecahedron = obj_lines_to_mesh(include_str!("assets/dodecahedron.obj"));
-    
-    dodecahedron
+// Load meshes
+fn couch_mr() -> Mesh {
+    let couch_mr = obj_lines_to_mesh(include_str!("assets/couch_mr.obj"));
+    couch_mr
 }
 
 fn avatar() -> Mesh {
     let avatar = obj_lines_to_mesh(include_str!("assets/avatar.obj"));
-
     avatar
 }
 
+// Create shaders
 fn avatar_shader() -> ShaderSource {
     let fragment_src = "
     #version 330
@@ -54,7 +55,10 @@ impl UserState for ClientState {
             mesh: avatar(),
              id: AVATAR_RDR });
         
-        io.send(&avatar_shader());
+        io.send(&UploadMesh { 
+            mesh: couch_mr(),
+            id: COUCH_RDR });
+            
 
         // NOTE: We are using the println defined by cimvr_engine_interface here, NOT the standard library!
         cimvr_engine_interface::println!("This prints");
@@ -71,6 +75,7 @@ impl UserState for ServerState {
     // Implement a constructor
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
 
+        // Declare renders
         let avatar_render = Render {
             id: AVATAR_RDR,
             primitive: Primitive::Triangles,
@@ -78,10 +83,23 @@ impl UserState for ServerState {
             shader: None,
         };
 
-        let ent = io.create_entity();
-        io.add_component(ent, &Transform::identity());
-        io.add_component(ent, &avatar_render);
-        io.add_component(ent, &Synchronized);
+        let couch_render = Render {
+            id: COUCH_RDR,
+            primitive: Primitive::Triangles,
+            limit: None,
+            shader: None,
+        };
+
+        // Create entities
+        let avatar = io.create_entity();
+        io.add_component(avatar, &Transform::identity());
+        io.add_component(avatar, &avatar_render);
+        io.add_component(avatar, &Synchronized);
+
+        let couch = io.create_entity();
+        io.add_component(couch, &Transform::identity());
+        io.add_component(couch, &couch_render);
+        io.add_component(couch, &Synchronized);
 
         println!("Hello, server!");
         Self
