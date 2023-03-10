@@ -32,13 +32,11 @@ fn avatar_shader() -> ShaderSource {
     let fragment_src = "
     #version 330
     
-    in vec4 f_color;
-    
+    in vec4 color;
     out vec4 out_color;
     
     void main() {
-        vec3 color = f_color.rgb;
-        out_color = vec4(color, 1.);
+        out_color = vec4(1., 1., 0., 1.);
     }"
         .into();
     ShaderSource {
@@ -77,7 +75,7 @@ impl UserState for ServerState {
             id: AVATAR_RDR,
             primitive: Primitive::Triangles,
             limit: None,
-            shader: Some(AVATAR_SHADER),
+            shader: None,
         };
 
         let ent = io.create_entity();
