@@ -47,8 +47,25 @@ pub fn obj_lines_to_mesh(obj: &str) -> Mesh {
                 }
                 m.indices.extend(indices);
             },
+            Some("vt") => { // Vertex textures
+                // We treat this similarly to how we treat a vertex line, but just as 
+                // 1 array of 3 elements: (u,v,w)
+                // Each vt line will look like: 'vt u v [w]'
+                let mut uvw = [0.; 3];
+
+                for dim in &mut uvw {
+                    let Some(text) = rest.next() else { break };
+                    *dim = text.parse().expect("Invalid float");
+
+                    //*dim -= 1;
+                }
+
+                // Add to list of vts
+                // m.vt_indices.extend(uvw);
+            },
             Some("f") => { // Faces
-                // At this point all vertices have been declared
+                // At this point all vertices, texture coordinates, vertex normals etc.
+                // have been declared
                 // Treat the line as a list of indices to be divided into triangles
                 // Drawing faces as a triangle fan
 
@@ -75,10 +92,11 @@ pub fn obj_lines_to_mesh(obj: &str) -> Mesh {
                     let idx: u32 = index_info[0].parse().expect("Invalid index");
                     parsed_line.push(idx - 1);                              // OBJ files are one-indexed 
 
-                    // Index value might also have vt, vn
+                    // Vertex might also have vt, vn index associated
                     // Still need to find a way to apply these
                     if index_info.len() >= 2 {
                         let vt = index_info[1].parse::<u32>().expect("Invalid vt");
+
                         if index_info.len() ==3 {
                             let vn = index_info[2].parse::<u32>().expect("Invalid vn");
                         }
