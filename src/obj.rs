@@ -13,7 +13,7 @@ pub fn obj_lines_to_mesh(obj: &str) -> Mesh {
 
         // Break the first bit off
         let (first, mut rest) = (line.next(), line);
-
+        
         // Which kind of line is it?
         match first {
             Some("v") => { // Vertex
@@ -31,7 +31,7 @@ pub fn obj_lines_to_mesh(obj: &str) -> Mesh {
 
                 // Split the parts back up
                 let [pos, uvw] = parts;
-
+                
                 // Assemble the vertex
                 m.vertices.push(Vertex { pos, uvw });
             },
