@@ -293,71 +293,71 @@ impl UserState for ServerState {
         // Create entities
         // Galaga room
         let avatar = io.create_entity();
-        io.add_component(avatar, &Transform::identity());
-        io.add_component(avatar, &avatar_render);
-        io.add_component(avatar, &Synchronized);
+        io.add_component(avatar, Transform::identity());
+        io.add_component(avatar, avatar_render);
+        io.add_component(avatar, Synchronized);
 
         let couch_gr = io.create_entity();
-        io.add_component(couch_gr, &Transform::identity());
-        io.add_component(couch_gr, &couch_gr_render);
-        io.add_component(couch_gr, &Synchronized);
+        io.add_component(couch_gr, Transform::identity());
+        io.add_component(couch_gr, couch_gr_render);
+        io.add_component(couch_gr, Synchronized);
 
         let table_gr = io.create_entity();
-        io.add_component(table_gr, &Transform::identity());
-        io.add_component(table_gr, &table_gr_render);
-        io.add_component(table_gr, &Synchronized);
+        io.add_component(table_gr, Transform::identity());
+        io.add_component(table_gr, table_gr_render);
+        io.add_component(table_gr, Synchronized);
 
         let mug_gr = io.create_entity();
-        io.add_component(mug_gr, &Transform::identity());
-        io.add_component(mug_gr, &mug_gr_render);
-        io.add_component(mug_gr, &Synchronized);
+        io.add_component(mug_gr, Transform::identity());
+        io.add_component(mug_gr, mug_gr_render);
+        io.add_component(mug_gr, Synchronized);
 
         let tv_gr = io.create_entity();
-        io.add_component(tv_gr, &Transform::identity());
-        io.add_component(tv_gr, &tv_gr_render);
-        io.add_component(tv_gr, &Synchronized);
+        io.add_component(tv_gr, Transform::identity());
+        io.add_component(tv_gr, tv_gr_render);
+        io.add_component(tv_gr, Synchronized);
 
         // Main room
         let couch_mr = io.create_entity();
-        io.add_component(couch_mr, &Transform::identity());
-        io.add_component(couch_mr, &couch_mr_render);
-        io.add_component(couch_mr, &Synchronized);
+        io.add_component(couch_mr, Transform::identity());
+        io.add_component(couch_mr, couch_mr_render);
+        io.add_component(couch_mr, Synchronized);
 
         let table_mr = io.create_entity();
-        io.add_component(table_mr, &Transform::identity());
-        io.add_component(table_mr, &table_mr_render);
-        io.add_component(table_mr, &Synchronized);
+        io.add_component(table_mr, Transform::identity());
+        io.add_component(table_mr, table_mr_render);
+        io.add_component(table_mr, Synchronized);
 
         let blocks = io.create_entity();
-        io.add_component(blocks, &Transform::identity());
-        io.add_component(blocks, &block_render);
-        io.add_component(blocks, &Synchronized);
+        io.add_component(blocks, Transform::identity());
+        io.add_component(blocks, block_render);
+        io.add_component(blocks, Synchronized);
 
         let mugs_mr = io.create_entity();
-        io.add_component(mugs_mr, &Transform::identity());
-        io.add_component(mugs_mr, &mugs_mr_render);
-        io.add_component(mugs_mr, &Synchronized);
+        io.add_component(mugs_mr, Transform::identity());
+        io.add_component(mugs_mr, mugs_mr_render);
+        io.add_component(mugs_mr, Synchronized);
 
         // Bowling room
         let pins = io.create_entity();
-        io.add_component(pins, &Transform::identity());
-        io.add_component(pins, &pins_render);
-        io.add_component(pins, &Synchronized);
+        io.add_component(pins, Transform::identity());
+        io.add_component(pins, pins_render);
+        io.add_component(pins, Synchronized);
 
         let tv_br = io.create_entity();
-        io.add_component(tv_br, &Transform::identity());
-        io.add_component(tv_br, &tv_br_render);
-        io.add_component(tv_br, &Synchronized);
+        io.add_component(tv_br, Transform::identity());
+        io.add_component(tv_br, tv_br_render);
+        io.add_component(tv_br, Synchronized);
 
         let shelf_br = io.create_entity();
-        io.add_component(shelf_br, &Transform::identity());
-        io.add_component(shelf_br, &shelf_br_render);
-        io.add_component(shelf_br, &Synchronized);
+        io.add_component(shelf_br, Transform::identity());
+        io.add_component(shelf_br, shelf_br_render);
+        io.add_component(shelf_br, Synchronized);
 
         let balls_br = io.create_entity();
-        io.add_component(balls_br, &Transform::identity());
-        io.add_component(balls_br, &balls_br_render);
-        io.add_component(balls_br, &Synchronized);
+        io.add_component(balls_br, Transform::identity());
+        io.add_component(balls_br, balls_br_render);
+        io.add_component(balls_br, Synchronized);
 
         println!("Hello, server!");
         Self
