@@ -199,36 +199,36 @@ impl UserState for ServerState {
         let avatar_render = Render {
             id: AVATAR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let couch_gr_render = Render {
             id: COUCH_GR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let table_gr_render = Render {
             id: TABLE_GR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let mug_gr_render = Render {
             id: MUG_GR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let tv_gr_render = Render {
             id: TV_GR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
 
@@ -236,58 +236,58 @@ impl UserState for ServerState {
         let couch_mr_render = Render {
             id: COUCH_MR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let table_mr_render = Render {
             id: TABLE_MR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let block_render = Render {
             id: BLOCK_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let mugs_mr_render = Render {
             id: MUGS_MR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         // Bowling room
         let pins_render = Render {
             id: PINS_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let tv_br_render = Render {
             id: TV_BR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let shelf_br_render = Render {
             id: SHELF_BR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         let balls_br_render = Render {
             id: BALLS_BR_RDR,
             primitive: Primitive::Triangles,
-            limit: None,
-            shader: None,
+            limit: None.into(),
+            shader: None.into(),
         };
 
         // Create entities
