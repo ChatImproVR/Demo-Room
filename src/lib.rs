@@ -1,10 +1,13 @@
 use cimvr_common::{
-    render::{Mesh, Primitive, Render, UploadMesh, MeshHandle, ShaderSource, ShaderHandle, DEFAULT_VERTEX_SHADER},
+    render::{
+        Mesh, MeshHandle, Primitive, Render, ShaderHandle, ShaderSource, UploadMesh,
+        DEFAULT_VERTEX_SHADER,
+    },
     Transform,
 };
 use cimvr_engine_interface::{make_app_state, pkg_namespace, prelude::*, println};
 
-use crate::obj::obj_lines_to_mesh;
+use obj_parser::obj::obj_lines_to_mesh;
 
 mod obj;
 
@@ -45,7 +48,6 @@ fn tv_gr() -> Mesh {
     tv_gr
 }
 
-
 // Main room
 pub const COUCH_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_mr"));
 pub const TABLE_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_mr"));
@@ -71,7 +73,6 @@ fn mugs_mr() -> Mesh {
     let mugs_mr = obj_lines_to_mesh(include_str!("assets/mugs_mr.obj"));
     mugs_mr
 }
-
 
 // Bowling room
 pub const PINS_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Pins"));
@@ -99,7 +100,6 @@ fn balls_br() -> Mesh {
     balls_br
 }
 
-
 // Create shaders -- not in use yet
 fn avatar_shader() -> ShaderSource {
     let fragment_src = "
@@ -111,7 +111,7 @@ fn avatar_shader() -> ShaderSource {
     void main() {
         out_color = vec4(1., 1., 0., 1.);
     }"
-        .into();
+    .into();
     ShaderSource {
         vertex_src: DEFAULT_VERTEX_SHADER.to_string(),
         fragment_src,
@@ -122,62 +122,73 @@ fn avatar_shader() -> ShaderSource {
 impl UserState for ClientState {
     // Implement a constructor
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
-        
         // Galaga room
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: avatar(),
-             id: AVATAR_RDR });
+            id: AVATAR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: couch_gr(),
-            id: COUCH_GR_RDR });
+            id: COUCH_GR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: table_gr(),
-            id: TABLE_GR_RDR });
+            id: TABLE_GR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: mug_gr(),
-            id: MUG_GR_RDR });
+            id: MUG_GR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: tv_gr(),
-            id: TV_GR_RDR });
-    
+            id: TV_GR_RDR,
+        });
+
         // Main room
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: couch_mr(),
-            id: COUCH_MR_RDR });
+            id: COUCH_MR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: table_mr(),
-            id: TABLE_MR_RDR });
+            id: TABLE_MR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: blocks(),
-            id: BLOCK_RDR });
+            id: BLOCK_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: mugs_mr(),
-            id: MUGS_MR_RDR });
+            id: MUGS_MR_RDR,
+        });
 
         // Bowling Room
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: pins(),
-            id: PINS_RDR });
+            id: PINS_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: tv_br(),
-            id: TV_BR_RDR });
+            id: TV_BR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: shelf_br(),
-            id: SHELF_BR_RDR });
+            id: SHELF_BR_RDR,
+        });
 
-        io.send(&UploadMesh { 
+        io.send(&UploadMesh {
             mesh: balls_br(),
-            id: BALLS_BR_RDR });
-
+            id: BALLS_BR_RDR,
+        });
 
         // NOTE: We are using the println defined by cimvr_engine_interface here, NOT the standard library!
         cimvr_engine_interface::println!("This prints");
@@ -193,7 +204,6 @@ struct ServerState;
 impl UserState for ServerState {
     // Implement a constructor
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
-
         // Declare renders
         // Galaga room
         let avatar_render = Render {
@@ -230,7 +240,6 @@ impl UserState for ServerState {
             limit: None.into(),
             shader: None.into(),
         };
-
 
         // Main room
         let couch_mr_render = Render {
