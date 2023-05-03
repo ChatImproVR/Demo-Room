@@ -7,10 +7,15 @@ use cimvr_common::{
 };
 use cimvr_engine_interface::{make_app_state, pkg_namespace, prelude::*, println};
 
-use obj_parser::obj::obj_lines_to_mesh;
-
-mod obj;
-
+// use crate::obj::obj_lines_to_mesh;
+// use obj_parser::obj;
+// use obj_parser;
+// use ::obj_parser::obj::obj_lines_to_mesh;
+// use thingie_test::obj_thingie::obj_lines_to_mesh;
+use obj_reader::obj::obj_lines_to_mesh;
+// use obj_parser::obj_thingie;
+// use obj_parser::obj_thingie::obj_lines_to_mesh;
+// use thingie_test::obj_thingie::obj_lines_to_mesh;
 // All state associated with client-side behaviour
 struct ClientState;
 
