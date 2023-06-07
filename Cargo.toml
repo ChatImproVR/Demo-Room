@@ -8,8 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # common and engine interface need to be local for your personal machine
-cimvr_common = { path = "../iteration0/common" }
-cimvr_engine_interface = { path = "../iteration0/engine_interface" }
-# obj_parser = {path = "../iteration0/obj_parse_pog"}
-obj_reader = {path = "../iteration0/obj_loader"}
+cimvr_common = { path = "../../../Desktop/iteration0/common" }
+cimvr_engine_interface = { path = "../../../Desktop/iteration0/engine_interface" }
+obj_reader = {path = "../../../Desktop/iteration0/obj_loader"}
 serde = { version = "1", features = ["derive"] }
