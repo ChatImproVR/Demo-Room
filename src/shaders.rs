@@ -93,6 +93,22 @@ void main() {
 }
 "#;
 
+// main room rug
+pub const RUG_GR_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.004, 0.031, 0.078, 1.0);
+}
+"#;
+
 // Brown couches
 pub const COUCH_FRAG:&str = r#"
 #version 410
@@ -141,6 +157,21 @@ void main() {
 }
 "#;
 
+pub const RUG_HALL_FRAG: &str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.016, 0.078, 0.004, 1.0);
+}
+"#;
+
 // Main room walls and floor
 pub const WALLS_MR_FRAG:&str = r#"
 #version 410
@@ -156,6 +187,23 @@ void main() {
     out_color = vec4(0.1, 0.1, 0.1, 1.0);
 }
 "#;
+
+// main room rug
+pub const RUG_MR_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.078, 0.004, 0.004, 1.0);
+}
+"#;
+
 
 
 // Bowling room walls and floor

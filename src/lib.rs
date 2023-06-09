@@ -16,6 +16,9 @@ struct ClientState;
 pub const WALLS_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_gr"));
 pub const WALLS_GR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_gr"));
 
+pub const RUG_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Rug_gr"));
+pub const RUG_GR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Rug_gr"));
+
 pub const AVATAR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Avatar"));
 pub const AVATAR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
 
@@ -31,6 +34,11 @@ pub const TV_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_gr"));
 fn walls_gr() -> Mesh {
     let walls_gr = obj_lines_to_mesh(include_str!("assets/gr_walls.obj"));
     walls_gr
+}
+
+fn rug_gr() -> Mesh {
+    let rug_gr = obj_lines_to_mesh(include_str!("assets/rug_gr.obj"));
+    rug_gr
 }
 
 fn avatar() -> Mesh {
@@ -62,14 +70,25 @@ fn tv_gr() -> Mesh {
 pub const WALLS_HALL_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_hall"));
 pub const WALLS_HALL_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_hall"));
 
+pub const RUG_HALL_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Rug_hall"));
+pub const RUG_HALL_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Rug_hall"));
+
 fn walls_hall() -> Mesh {
     let walls_hall = obj_lines_to_mesh(include_str!("assets/hall_walls.obj"));
+    walls_hall
+}
+
+fn rug_hall() -> Mesh {
+    let walls_hall = obj_lines_to_mesh(include_str!("assets/rug_hall.obj"));
     walls_hall
 }
 
 // Main room
 pub const WALLS_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_mr"));
 pub const WALLS_MR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_mr"));
+
+pub const RUG_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Rug_mr"));
+pub const RUG_MR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Rug_mr"));
 
 pub const COUCH_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_mr"));
 pub const TABLE_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_mr"));
@@ -79,6 +98,11 @@ pub const MUGS_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Mugs_mr"));
 fn walls_mr() -> Mesh {
     let walls_mr = obj_lines_to_mesh(include_str!("assets/mr_walls.obj"));
     walls_mr
+}
+
+fn rug_mr() -> Mesh {
+    let rug_mr = obj_lines_to_mesh(include_str!("assets/rug_mr.obj"));
+    rug_mr
 }
 
 fn couch_mr() -> Mesh {
@@ -164,6 +188,17 @@ impl UserState for ClientState {
         });
 
         io.send(&UploadMesh {
+            mesh: rug_gr(),
+            id: RUG_GR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::RUG_GR_FRAG.to_string(),
+            id: RUG_GR_SHDR,
+        });
+
+        io.send(&UploadMesh {
             mesh: avatar(),
             id: AVATAR_RDR,
         });
@@ -218,6 +253,17 @@ impl UserState for ClientState {
             id: WALLS_HALL_SHDR,
         });
 
+        io.send(&UploadMesh {
+            mesh: rug_hall(),
+            id: RUG_HALL_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::RUG_HALL_FRAG.to_string(),
+            id: RUG_HALL_SHDR,
+        });
+
         // Main room
         io.send(&UploadMesh {
             mesh: walls_mr(),
@@ -228,6 +274,17 @@ impl UserState for ClientState {
             vertex_src: shaders::GRADIENT_VERT.to_string(),
             fragment_src: shaders::WALLS_MR_FRAG.to_string(),
             id: WALLS_MR_SHDR,
+        });
+
+        io.send(&UploadMesh {
+            mesh: rug_mr(),
+            id: RUG_MR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::RUG_MR_FRAG.to_string(),
+            id: RUG_MR_SHDR,
         });
 
         io.send(&UploadMesh {
@@ -326,6 +383,13 @@ impl UserState for ServerState {
             shader: Some(WALLS_GR_SHDR).into(),
         };
 
+        let rug_gr_render = Render {
+            id: RUG_GR_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(RUG_GR_SHDR).into(),
+        };
+
         let avatar_render = Render {
             id: AVATAR_RDR,
             primitive: Primitive::Triangles,
@@ -377,6 +441,13 @@ impl UserState for ServerState {
             shader: Some(WALLS_HALL_SHDR).into(),
         };
 
+        let rug_hall_render = Render {
+            id: RUG_HALL_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(RUG_HALL_SHDR).into(),
+        };
+
 
         // Main room
         let walls_mr_render = Render {
@@ -384,6 +455,13 @@ impl UserState for ServerState {
             primitive: Primitive::Triangles,
             limit: None.into(),
             shader: Some(WALLS_MR_SHDR).into(),
+        };
+
+        let rug_mr_render = Render {
+            id: RUG_MR_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(RUG_MR_SHDR).into(),
         };
 
         let couch_mr_render = Render {
@@ -464,6 +542,11 @@ impl UserState for ServerState {
         io.add_component(walls_gr, walls_gr_render);
         io.add_component(walls_gr, Synchronized);
 
+        let rug_gr = io.create_entity().build();
+        io.add_component(rug_gr, Transform::identity());
+        io.add_component(rug_gr, rug_gr_render);
+        io.add_component(rug_gr, Synchronized);
+
         let avatar = io.create_entity().build();
         io.add_component(avatar, Transform::identity());
         io.add_component(avatar, avatar_render);
@@ -498,11 +581,21 @@ impl UserState for ServerState {
         io.add_component(walls_hall, walls_hall_render);
         io.add_component(walls_hall, Synchronized);
 
+        let rug_hall = io.create_entity().build();
+        io.add_component(rug_hall, Transform::identity());
+        io.add_component(rug_hall, rug_hall_render);
+        io.add_component(rug_hall, Synchronized);
+
         // Main room
         let walls_mr = io.create_entity().build();
         io.add_component(walls_mr, Transform::identity());
         io.add_component(walls_mr, walls_mr_render);
         io.add_component(walls_mr, Synchronized);
+
+        let rug_mr = io.create_entity().build();
+        io.add_component(rug_mr, Transform::identity());
+        io.add_component(rug_mr, rug_mr_render);
+        io.add_component(rug_mr, Synchronized);
 
         let couch_mr = io.create_entity().build();
         io.add_component(couch_mr, Transform::identity());
