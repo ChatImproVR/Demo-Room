@@ -13,6 +13,9 @@ mod shaders;
 struct ClientState;
 
 // Galaga Room
+pub const WALLS_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_gr"));
+pub const WALLS_GR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_gr"));
+
 pub const AVATAR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Avatar"));
 pub const AVATAR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
 
@@ -20,6 +23,11 @@ pub const COUCH_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_gr"))
 pub const TABLE_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_gr"));
 pub const MUG_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Mug_gr"));
 pub const TV_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_gr"));
+
+fn walls_gr() -> Mesh {
+    let walls_gr = obj_lines_to_mesh(include_str!("assets/gr_walls.obj"));
+    walls_gr
+}
 
 fn avatar() -> Mesh {
     let avatar = obj_lines_to_mesh(include_str!("assets/avatar.obj"));
@@ -46,11 +54,27 @@ fn tv_gr() -> Mesh {
     tv_gr
 }
 
+// Hallway
+pub const WALLS_HALL_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_hall"));
+pub const WALLS_HALL_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_hall"));
+
+fn walls_hall() -> Mesh {
+    let walls_hall = obj_lines_to_mesh(include_str!("assets/hall_walls.obj"));
+    walls_hall
+}
+
 // Main room
+pub const WALLS_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_mr"));
+pub const WALLS_MR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_mr"));
 pub const COUCH_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_mr"));
 pub const TABLE_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_mr"));
 pub const BLOCK_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Blocks"));
 pub const MUGS_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Mugs_mr"));
+
+fn walls_mr() -> Mesh {
+    let walls_mr = obj_lines_to_mesh(include_str!("assets/mr_walls.obj"));
+    walls_mr
+}
 
 fn couch_mr() -> Mesh {
     let couch_mr = obj_lines_to_mesh(include_str!("assets/couch_mr.obj"));
@@ -104,6 +128,17 @@ impl UserState for ClientState {
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
         // Galaga room
         io.send(&UploadMesh {
+            mesh: walls_gr(),
+            id: WALLS_GR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::WALLS_GR_FRAG.to_string(),
+            id: WALLS_GR_SHDR,
+        });
+
+        io.send(&UploadMesh {
             mesh: avatar(),
             id: AVATAR_RDR,
         });
@@ -134,7 +169,30 @@ impl UserState for ClientState {
             id: TV_GR_RDR,
         });
 
+        // Hallway
+        io.send(&UploadMesh {
+            mesh: walls_hall(),
+            id: WALLS_HALL_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::WALLS_HALL_FRAG.to_string(),
+            id: WALLS_HALL_SHDR,
+        });
+
         // Main room
+        io.send(&UploadMesh {
+            mesh: walls_mr(),
+            id: WALLS_MR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::WALLS_MR_FRAG.to_string(),
+            id: WALLS_MR_SHDR,
+        });
+
         io.send(&UploadMesh {
             mesh: couch_mr(),
             id: COUCH_MR_RDR,
@@ -189,6 +247,14 @@ impl UserState for ServerState {
         
         // Declare renders
         // Galaga room
+
+        let walls_gr_render = Render {
+            id: WALLS_GR_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(WALLS_GR_SHDR).into(),
+        };
+
         let avatar_render = Render {
             id: AVATAR_RDR,
             primitive: Primitive::Triangles,
@@ -203,8 +269,6 @@ impl UserState for ServerState {
             avatar_bb_max.x - avatar_bb_min.x, avatar_bb_max.y - avatar_bb_min.y, avatar_bb_max.z - avatar_bb_min.z, 0., 
             0., 0., 0., 0.,
         ]);
-
-        println!("renderextra values: {:?}", avatar_bb_renderextra.0);
 
         let couch_gr_render = Render {
             id: COUCH_GR_RDR,
@@ -234,7 +298,23 @@ impl UserState for ServerState {
             shader: None.into(),
         };
 
+        // Hallway
+        let walls_hall_render = Render {
+            id: WALLS_HALL_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(WALLS_HALL_SHDR).into(),
+        };
+
+
         // Main room
+        let walls_mr_render = Render {
+            id: WALLS_MR_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(WALLS_MR_SHDR).into(),
+        };
+
         let couch_mr_render = Render {
             id: COUCH_MR_RDR,
             primitive: Primitive::Triangles,
@@ -294,6 +374,11 @@ impl UserState for ServerState {
 
         // Create entities
         // Galaga room
+        let walls_gr = io.create_entity().build();
+        io.add_component(walls_gr, Transform::identity());
+        io.add_component(walls_gr, walls_gr_render);
+        io.add_component(walls_gr, Synchronized);
+
         let avatar = io.create_entity().build();
         io.add_component(avatar, Transform::identity());
         io.add_component(avatar, avatar_render);
@@ -321,7 +406,19 @@ impl UserState for ServerState {
         io.add_component(tv_gr, tv_gr_render);
         io.add_component(tv_gr, Synchronized);
 
+
+        // Hallway
+        let walls_hall = io.create_entity().build();
+        io.add_component(walls_hall, Transform::identity());
+        io.add_component(walls_hall, walls_hall_render);
+        io.add_component(walls_hall, Synchronized);
+
         // Main room
+        let walls_mr = io.create_entity().build();
+        io.add_component(walls_mr, Transform::identity());
+        io.add_component(walls_mr, walls_mr_render);
+        io.add_component(walls_mr, Synchronized);
+
         let couch_mr = io.create_entity().build();
         io.add_component(couch_mr, Transform::identity());
         io.add_component(couch_mr, couch_mr_render);

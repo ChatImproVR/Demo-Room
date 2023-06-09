@@ -77,7 +77,55 @@ void main() {
 }
 "#;
 
-// Cyan
+// Galaga room walls and floor
+pub const WALLS_GR_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.58, 0.525, 0.435, 1.0);
+}
+"#;
+
+// Hallway walls and floor
+pub const WALLS_HALL_FRAG: &str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.561, 0.561, 0.561, 1.0);
+}
+"#;
+
+// Main room walls and floor
+pub const WALLS_MR_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.4, 0.4, 0.4, 1.0);
+}
+"#;
+
+// lavender
 pub const LAV_FRAG:&str = r#"
 #version 410
 precision mediump float;
@@ -89,6 +137,6 @@ in vec4 f_color;
 out vec4 out_color;
 
 void main() {
-    out_color = vec4(0.651, 0.576, 0.851, 1.0);
+    out_color = vec4(0.369, 0.31, 0.529, 1.0);
 }
 "#;
