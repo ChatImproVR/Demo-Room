@@ -1,7 +1,7 @@
 use cimvr_common::{
     render::{
         Mesh, MeshHandle, Primitive, Render, ShaderHandle, ShaderSource, UploadMesh,
-        DEFAULT_VERTEX_SHADER,
+        DEFAULT_VERTEX_SHADER, RenderExtra, Pos
     },
     Transform,
 };
@@ -109,8 +109,8 @@ impl UserState for ClientState {
         });
 
         io.send(&ShaderSource {
-            vertex_src: shaders::VERTEX_SHADER_TEST.to_string(),
-            fragment_src: shaders::FRAGMENT_SHADER_TEST.to_string(),
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::LAV_FRAG.to_string(),
             id: AVATAR_SHDR,
         });
 
@@ -196,6 +196,16 @@ impl UserState for ServerState {
             shader: Some(AVATAR_SHDR).into(),
         };
 
+        let (avatar_bb_min, avatar_bb_max) : (Pos, Pos) = avatar().find_bb();
+        let avatar_bb_renderextra: RenderExtra = RenderExtra ([
+            avatar_bb_min.x, avatar_bb_min.y, avatar_bb_min.z, 0.,
+            avatar_bb_max.x, avatar_bb_max.y, avatar_bb_max.z, 0.,
+            avatar_bb_max.x - avatar_bb_min.x, avatar_bb_max.y - avatar_bb_min.y, avatar_bb_max.z - avatar_bb_min.z, 0., 
+            0., 0., 0., 0.,
+        ]);
+
+        println!("renderextra values: {:?}", avatar_bb_renderextra.0);
+
         let couch_gr_render = Render {
             id: COUCH_GR_RDR,
             primitive: Primitive::Triangles,
@@ -229,21 +239,21 @@ impl UserState for ServerState {
             id: COUCH_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: Some(AVATAR_SHDR).into(),
+            shader: None.into(),
         };
 
         let table_mr_render = Render {
             id: TABLE_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: Some(AVATAR_SHDR).into(),
+            shader: None.into(),
         };
 
         let block_render = Render {
             id: BLOCK_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: Some(AVATAR_SHDR).into(),
+            shader: None.into(),
         };
 
         let mugs_mr_render = Render {
@@ -288,6 +298,8 @@ impl UserState for ServerState {
         io.add_component(avatar, Transform::identity());
         io.add_component(avatar, avatar_render);
         io.add_component(avatar, Synchronized);
+        // bounding box stuffs
+        io.add_component(avatar, avatar_bb_renderextra);
 
         let couch_gr = io.create_entity().build();
         io.add_component(couch_gr, Transform::identity());
