@@ -11,13 +11,48 @@ use obj_reader::obj::obj_lines_to_mesh;
 struct ClientState;
 
 // Galaga Room
-pub const AVATAR_SHADER: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
 pub const AVATAR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Avatar"));
+pub const AVATAR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
 
 pub const COUCH_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_gr"));
 pub const TABLE_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_gr"));
 pub const MUG_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Mug_gr"));
 pub const TV_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_gr"));
+
+const VERTEX_SHADER_TEST: &str = r#"
+#version 410
+
+uniform mat4 view;
+uniform mat4 proj;
+uniform mat4 transf;
+uniform mat4 extra;
+
+layout (location = 0) in vec3 pos;
+layout (location = 1) in vec3 uvw;
+
+out vec4 f_color;
+
+void main() {
+    gl_Position = proj * view * transf * vec4(pos, 1.);
+    vec4 extra_c = extra[0];
+    vec3 color = mix(uvw, extra_c.xyz, extra_c.w);
+    gl_PointSize = 2.0;
+    f_color = vec4(color, 1.);
+}
+"#;
+
+const FRAGMENT_SHADER_TEST: &str = r#"
+#version 410
+precision mediump float;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(1., 0., 0., 1.);
+}
+"#;
 
 fn avatar() -> Mesh {
     let avatar = obj_lines_to_mesh(include_str!("assets/avatar.obj"));
@@ -96,24 +131,6 @@ fn balls_br() -> Mesh {
     balls_br
 }
 
-// Create shaders -- not in use yet
-fn avatar_shader() -> ShaderSource {
-    let fragment_src = "
-    #version 330
-    
-    in vec4 color;
-    out vec4 out_color;
-    
-    void main() {
-        out_color = vec4(1., 1., 0., 1.);
-    }"
-    .into();
-    ShaderSource {
-        vertex_src: DEFAULT_VERTEX_SHADER.to_string(),
-        fragment_src,
-        id: AVATAR_SHADER,
-    }
-}
 
 impl UserState for ClientState {
     // Implement a constructor
@@ -122,6 +139,12 @@ impl UserState for ClientState {
         io.send(&UploadMesh {
             mesh: avatar(),
             id: AVATAR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: VERTEX_SHADER_TEST.to_string(),
+            fragment_src: FRAGMENT_SHADER_TEST.to_string(),
+            id: AVATAR_SHDR,
         });
 
         io.send(&UploadMesh {
@@ -186,10 +209,6 @@ impl UserState for ClientState {
             id: BALLS_BR_RDR,
         });
 
-        // NOTE: We are using the println defined by cimvr_engine_interface here, NOT the standard library!
-        cimvr_engine_interface::println!("This prints");
-        std::println!("But this doesn't");
-
         Self
     }
 }
@@ -200,13 +219,14 @@ struct ServerState;
 impl UserState for ServerState {
     // Implement a constructor
     fn new(io: &mut EngineIo, _sched: &mut EngineSchedule<Self>) -> Self {
+        
         // Declare renders
         // Galaga room
         let avatar_render = Render {
             id: AVATAR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(AVATAR_SHDR).into(),
         };
 
         let couch_gr_render = Render {
@@ -242,21 +262,21 @@ impl UserState for ServerState {
             id: COUCH_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(AVATAR_SHDR).into(),
         };
 
         let table_mr_render = Render {
             id: TABLE_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(AVATAR_SHDR).into(),
         };
 
         let block_render = Render {
             id: BLOCK_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(AVATAR_SHDR).into(),
         };
 
         let mugs_mr_render = Render {
@@ -363,8 +383,6 @@ impl UserState for ServerState {
         io.add_component(balls_br, Transform::identity());
         io.add_component(balls_br, balls_br_render);
         io.add_component(balls_br, Synchronized);
-
-        println!("Hello, server!");
         Self
     }
 }
