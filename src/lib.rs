@@ -20,6 +20,8 @@ pub const AVATAR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Avatar"));
 pub const AVATAR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Avatar"));
 
 pub const COUCH_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_gr"));
+pub const COUCH_GR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Couch_gr"));
+
 pub const TABLE_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_gr"));
 pub const MUG_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Mug_gr"));
 pub const TV_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_gr"));
@@ -66,6 +68,7 @@ fn walls_hall() -> Mesh {
 // Main room
 pub const WALLS_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_mr"));
 pub const WALLS_MR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_mr"));
+
 pub const COUCH_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_mr"));
 pub const TABLE_MR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_mr"));
 pub const BLOCK_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Blocks"));
@@ -97,10 +100,20 @@ fn mugs_mr() -> Mesh {
 }
 
 // Bowling room
+pub const WALLS_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Walls_br"));
+pub const WALLS_BR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Walls_br"));
+
 pub const PINS_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Pins"));
+pub const PINS_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Pins"));
+
 pub const TV_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_br"));
 pub const SHELF_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Shelf_br"));
 pub const BALLS_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Balls_br"));
+
+fn walls_br() -> Mesh {
+    let walls_br = obj_lines_to_mesh(include_str!("assets/br_walls.obj"));
+    walls_br
+}
 
 fn pins() -> Mesh {
     let pins = obj_lines_to_mesh(include_str!("assets/pins.obj"));
@@ -152,6 +165,12 @@ impl UserState for ClientState {
         io.send(&UploadMesh {
             mesh: couch_gr(),
             id: COUCH_GR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::BROWN_FRAG.to_string(),
+            id: COUCH_GR_SHDR,
         });
 
         io.send(&UploadMesh {
@@ -215,8 +234,25 @@ impl UserState for ClientState {
 
         // Bowling Room
         io.send(&UploadMesh {
+            mesh: walls_br(),
+            id: WALLS_BR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::WALLS_BR_FRAG.to_string(),
+            id: WALLS_BR_SHDR,
+        });
+
+        io.send(&UploadMesh {
             mesh: pins(),
             id: PINS_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::WHITE_FRAG.to_string(),
+            id: PINS_SHDR,
         });
 
         io.send(&UploadMesh {
@@ -274,21 +310,21 @@ impl UserState for ServerState {
             id: COUCH_GR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(COUCH_GR_SHDR).into(),
         };
 
         let table_gr_render = Render {
             id: TABLE_GR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(COUCH_GR_SHDR).into(),
         };
 
         let mug_gr_render = Render {
             id: MUG_GR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(PINS_SHDR).into(),
         };
 
         let tv_gr_render = Render {
@@ -319,14 +355,14 @@ impl UserState for ServerState {
             id: COUCH_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(COUCH_GR_SHDR).into(),
         };
 
         let table_mr_render = Render {
             id: TABLE_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(COUCH_GR_SHDR).into(),
         };
 
         let block_render = Render {
@@ -340,15 +376,22 @@ impl UserState for ServerState {
             id: MUGS_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(PINS_SHDR).into(),
         };
 
         // Bowling room
+        let walls_br_render = Render {
+            id: WALLS_BR_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(WALLS_BR_SHDR).into(),
+        };
+
         let pins_render = Render {
             id: PINS_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(PINS_SHDR).into(),
         };
 
         let tv_br_render = Render {
@@ -440,6 +483,11 @@ impl UserState for ServerState {
         io.add_component(mugs_mr, Synchronized);
 
         // Bowling room
+        let walls_br = io.create_entity().build();
+        io.add_component(walls_br, Transform::identity());
+        io.add_component(walls_br, walls_br_render);
+        io.add_component(walls_br, Synchronized);
+
         let pins = io.create_entity().build();
         io.add_component(pins, Transform::identity());
         io.add_component(pins, pins_render);
