@@ -23,6 +23,8 @@ pub const COUCH_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Couch_gr"))
 pub const COUCH_GR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Couch_gr"));
 
 pub const TABLE_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Table_gr"));
+pub const TABLE_GR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Table_gr"));
+
 pub const MUG_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Mug_gr"));
 pub const TV_GR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_gr"));
 
@@ -108,7 +110,12 @@ pub const PINS_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Pins"));
 
 pub const TV_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("TV_br"));
 pub const SHELF_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Shelf_br"));
+
 pub const BALLS_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Balls_br"));
+pub const BALLS_BR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Balls_br"));
+
+pub const ALLEY_BR_RDR: MeshHandle = MeshHandle::new(pkg_namespace!("Alley_br"));
+pub const ALLEY_BR_SHDR: ShaderHandle = ShaderHandle::new(pkg_namespace!("Alley_br"));
 
 fn walls_br() -> Mesh {
     let walls_br = obj_lines_to_mesh(include_str!("assets/br_walls.obj"));
@@ -133,6 +140,11 @@ fn shelf_br() -> Mesh {
 fn balls_br() -> Mesh {
     let balls_br = obj_lines_to_mesh(include_str!("assets/balls_br.obj"));
     balls_br
+}
+
+fn alley_br() -> Mesh {
+    let alley_br = obj_lines_to_mesh(include_str!("assets/br_alley.obj"));
+    alley_br
 }
 
 
@@ -169,13 +181,19 @@ impl UserState for ClientState {
 
         io.send(&ShaderSource {
             vertex_src: shaders::GRADIENT_VERT.to_string(),
-            fragment_src: shaders::BROWN_FRAG.to_string(),
+            fragment_src: shaders::COUCH_FRAG.to_string(),
             id: COUCH_GR_SHDR,
         });
 
         io.send(&UploadMesh {
             mesh: table_gr(),
             id: TABLE_GR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::TABLE_FRAG.to_string(),
+            id: TABLE_GR_SHDR,
         });
 
         io.send(&UploadMesh {
@@ -270,6 +288,23 @@ impl UserState for ClientState {
             id: BALLS_BR_RDR,
         });
 
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::BLACK_FRAG.to_string(),
+            id: BALLS_BR_SHDR,
+        });
+
+        io.send(&UploadMesh {
+            mesh: alley_br(),
+            id: ALLEY_BR_RDR,
+        });
+
+        io.send(&ShaderSource {
+            vertex_src: shaders::GRADIENT_VERT.to_string(),
+            fragment_src: shaders::ALLEY_FRAG.to_string(),
+            id: ALLEY_BR_SHDR,
+        });
+
         Self
     }
 }
@@ -317,7 +352,7 @@ impl UserState for ServerState {
             id: TABLE_GR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: Some(COUCH_GR_SHDR).into(),
+            shader: Some(TABLE_GR_SHDR).into(),
         };
 
         let mug_gr_render = Render {
@@ -331,7 +366,7 @@ impl UserState for ServerState {
             id: TV_GR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(BALLS_BR_SHDR).into(),
         };
 
         // Hallway
@@ -362,14 +397,14 @@ impl UserState for ServerState {
             id: TABLE_MR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: Some(COUCH_GR_SHDR).into(),
+            shader: Some(TABLE_GR_SHDR).into(),
         };
 
         let block_render = Render {
             id: BLOCK_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(TABLE_GR_SHDR).into(),
         };
 
         let mugs_mr_render = Render {
@@ -398,21 +433,28 @@ impl UserState for ServerState {
             id: TV_BR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(BALLS_BR_SHDR).into(),
         };
 
         let shelf_br_render = Render {
             id: SHELF_BR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(TABLE_GR_SHDR).into(),
         };
 
         let balls_br_render = Render {
             id: BALLS_BR_RDR,
             primitive: Primitive::Triangles,
             limit: None.into(),
-            shader: None.into(),
+            shader: Some(BALLS_BR_SHDR).into(),
+        };
+
+        let alley_br_render = Render {
+            id: ALLEY_BR_RDR,
+            primitive: Primitive::Triangles,
+            limit: None.into(),
+            shader: Some(ALLEY_BR_SHDR).into(),
         };
 
         // Create entities
@@ -507,6 +549,12 @@ impl UserState for ServerState {
         io.add_component(balls_br, Transform::identity());
         io.add_component(balls_br, balls_br_render);
         io.add_component(balls_br, Synchronized);
+
+        let alley_br = io.create_entity().build();
+        io.add_component(alley_br, Transform::identity());
+        io.add_component(alley_br, alley_br_render);
+        io.add_component(alley_br, Synchronized);
+
         Self
     }
 }

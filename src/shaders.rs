@@ -93,8 +93,8 @@ void main() {
 }
 "#;
 
-// Brown
-pub const BROWN_FRAG:&str = r#"
+// Brown couches
+pub const COUCH_FRAG:&str = r#"
 #version 410
 precision mediump float;
 
@@ -106,6 +106,22 @@ out vec4 out_color;
 
 void main() {
     out_color = vec4(0.102, 0.059, 0.024, 1.0);
+}
+"#;
+
+// Light brown tables
+pub const TABLE_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.361, 0.243, 0.153, 1.0);
 }
 "#;
 
@@ -158,6 +174,22 @@ void main() {
 }
 "#;
 
+// Light brown tables
+pub const ALLEY_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.635, 0.529, 0.427, 1.0);
+}
+"#;
+
 
 // lavender
 pub const LAV_FRAG:&str = r#"
@@ -171,7 +203,7 @@ in vec4 f_color;
 out vec4 out_color;
 
 void main() {
-    out_color = vec4(0.369, 0.31, 0.529, 1.0);
+    out_color = vec4(0.114, 0.078, 0.2, 1.0);
 }
 "#;
 
@@ -188,5 +220,21 @@ out vec4 out_color;
 
 void main() {
     out_color = vec4(0.8, 0.8, 0.8, 1.0);
+}
+"#;
+
+// DARK GRAY
+pub const BLACK_FRAG:&str = r#"
+#version 410
+precision mediump float;
+
+uniform mat4 extra;
+
+in vec4 f_color;
+
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(0.05, 0.05, 0.05, 1.0);
 }
 "#;
